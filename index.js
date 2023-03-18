@@ -17,7 +17,22 @@ const schema = new mongoose.Schema({
 const user = mongoose.model("users", schema);
 mongoose.connect("mongodb+srv://Parimal:password147852@cluster0.1r1bcnt.mongodb.net/balance");
 app.get("/", function (req, res) {
-  res.send("We are in");
+  res.json("Smart Canteen");
+});
+app.post("/getbalance", function (req, res) {
+  let uid = req.body.uid;
+  user.findOne({ UID: uid }, async(err, founduser) => {
+    if (err) {
+      console.log(err);
+    } else {
+      if (founduser) {
+         res.json(founduser.account_balance);       
+      }
+      else
+         res.json("USER not found");         
+    }
+  }
+  );
 });
 app.post("/order", (req, res) => {
   let uid = req.body.uid;
@@ -44,7 +59,7 @@ app.post("/order", (req, res) => {
           res.json({"status":"Done","orderid":orderid2});
         }
       } else {
-        res.json({"status":"no account found"});
+        res.json({"status":"inssufficient balance"});
       }
     }
   });
