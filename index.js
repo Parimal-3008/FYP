@@ -7,7 +7,7 @@ db.on("error", (e) => console.error(e));
 db.on("open", () => console.log("connected to db"));
 app.use(express.json());
 // app.use(express.static("public"));
-app.listen(3000, () => {
+app.listen(process.env.PORT ||3000, () => {
   console.log("listening on 3000");
 });
 const schema = new mongoose.Schema({
