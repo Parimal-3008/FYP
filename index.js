@@ -46,7 +46,7 @@ app.post("/order", (req, res) => {
     }
   );
 
-  res.json({"status":"Done","orderid":orderid2});
+  res.json({"status":"Done","orderid":getorderid()});
   
 });
   
