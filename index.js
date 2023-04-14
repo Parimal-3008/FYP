@@ -38,34 +38,18 @@ app.post("/getbalance", function (req, res) {
 app.post("/order", (req, res) => {
   let uid = req.body.uid;
   let amt = req.body.amt;
-  user.findOne({ UID: uid }, async(err, founduser) => {
-    if (err) {
-      console.log(err);
-    } else {
-      if (founduser) {
-        // let orderid2 = getorderid();
-        // let orderamt = await getorderworth(order);
-        // console.log(orderamt);
-        // if (founduser.account_balance < orderamt)
-        //   res.json("Insufficient balance");
-        // else 
-        {
-          user.updateOne(
-            { UID: uid },
-            { account_balance: amt },
-            (err) => {
-              if (err) console.error(err);
-            }
-          );
-
-          res.json({"status":"Done","orderid":orderid2});
-        }
-      } else {
-        res.json({"status":"inssufficient balance"});
-      }
+  user.updateOne(
+    { UID: uid },
+    { account_balance: amt },
+    (err) => {
+      if (err) console.error(err);
     }
-  });
+  );
+
+  res.json({"status":"Done","orderid":orderid2});
+  
 });
+  
 app.post("/insert", (req, res) => {
   let uid = req.body.uid;
   let amt = req.body.amt;
