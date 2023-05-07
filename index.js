@@ -20,6 +20,12 @@ const schema = new mongoose.Schema({
   UID: String,
   account_balance: Number,
 });
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 const user = mongoose.model("users", schema);
 mongoose.connect("mongodb+srv://Parimal:password147852@cluster0.1r1bcnt.mongodb.net/balance");
 app.get("/", function (req, res) {
