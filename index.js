@@ -59,7 +59,7 @@ app.post("/order", (req, res) => {
     }
   );
 
-  res.json({"status":"Done","orderid":getorderid()});
+  res.json({"status":"Done"});
   
 });
   
