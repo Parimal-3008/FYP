@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const http = require('http');
-const socketIO = require('socket.io');
 const server = http.createServer(app);
 const db = mongoose.connection;
 var io = require('socket.io')(server, {
@@ -13,16 +12,17 @@ var io = require('socket.io')(server, {
 db.on("error", (e) => console.error(e));
 db.on("open", () => console.log("connected to db"));
 app.use(express.json());
-// app.use(express.static("public"));
-app.listen(process.env.PORT ||3000, () => {
-  console.log("listening on 3000");
+app.use(express.static("public"));
+server.listen(process.env.PORT || 4000, () => {
+  console.log("listening on 4000");
 });
 const schema = new mongoose.Schema({
   UID: String,
   account_balance: Number,
 });
+mongoose.set('strictQuery', true);
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'http://localhost/3000');
+  res.setHeader('Access-Control-Allow-Origin', 'https://localhost/3000');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   next();
