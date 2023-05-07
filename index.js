@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-
+const WebSocket = require('ws');
+const server = new WebSocket.Server({ port: 3001 });
 const db = mongoose.connection;
 db.on("error", (e) => console.error(e));
 db.on("open", () => console.log("connected to db"));
@@ -79,49 +80,22 @@ app.post("/insert", (req, res) => {
     }
   });
 });
-const getorderworth=(order)=>{
-    // 1 samosa
-    // 2 maggi
-    //4 dosa
-    //5 idli
-    // 3 noodles
-   let menu = new Map();
-    menu.set(1,20);
-    menu.set(2,25);
-    menu.set(3,30);
-    menu.set(4,35);
-    menu.set(5,40);
-    let sum =0;
-    // console.log(order)
-    for(let i in order)
-    {
-        //  console.log(order[i]["id"]+":"+order[i]["quantity"]);
-        sum = sum +  (Number(menu.get(order[i]["id"])) * Number(order[i]["quantity"]));
-    }
-    return sum;
-}
-/*
-order 
-[
-{
-    "id":1,
-    "quantity": 5
-},
-{
-"id":2,
-"quantity": 4
-},
-{
-    "id":3,
-    "quantity":1
-}
-]
-*/
-const getorderid=()=>{
-   const t1 = Date.now() ;
-   const t2 = new Date(t1);
-   let hr = Number(t2.getHours())*3600;
-   let min =  Number(t2.getMinutes())*60;
-   let sec = Number(t2.getSeconds());
-    return (hr+min+sec);
-}
+server.on('connection', (socket) => {
+  console.log('Client connected.');
+
+  socket.on('message', (data) => {
+    console.log(`Received message: ${data}`);
+
+    // Broadcast the message to all connected clients
+    server.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(data);
+      }
+    });
+  });
+
+  socket.on('close', () => {
+    console.log('Client disconnected.');
+  });
+});
+
