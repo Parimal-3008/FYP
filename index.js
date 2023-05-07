@@ -1,8 +1,9 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const WebSocket = require('ws');
-const server = new WebSocket.Server({ port: 8001});
+const http = require('http');
+const socketIO = require('socket.io');
+const server = http.createServer(app);
 const db = mongoose.connection;
 var io = require('socket.io')(server, {
     cors: {
@@ -91,22 +92,14 @@ app.post("/insert", (req, res) => {
     }
   });
 });
-server.on('connection', (socket) => {
-  console.log('Client connected.');
-
+io.on('connection', (socket) => {
+  console.log('A new client connected');
   socket.on('message', (data) => {
-    console.log(`Received message: ${data}`);
-
-    // Broadcast the message to all connected clients
-    server.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(data);
-      }
-    });
+    console.log('Received message:', data);
+    io.emit('message', data);
   });
-
-  socket.on('close', () => {
-    console.log('Client disconnected.');
+  socket.on('disconnect', () => {
+    console.log('A client disconnected');
   });
 });
 
