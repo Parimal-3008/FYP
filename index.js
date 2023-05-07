@@ -2,8 +2,13 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const WebSocket = require('ws');
-const server = new WebSocket.Server({ port: 3001});
+const server = new WebSocket.Server({ port: 8001});
 const db = mongoose.connection;
+var io = require('socket.io')(server, {
+    cors: {
+      origin: '*',
+    }
+});
 db.on("error", (e) => console.error(e));
 db.on("open", () => console.log("connected to db"));
 app.use(express.json());
